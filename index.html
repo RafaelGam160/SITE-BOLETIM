@@ -1,0 +1,37 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <title>Boletim Escolar</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <h1>Boletim Escolar</h1>
+
+  <form id="boletimForm">
+    <label for="nomeAluno">Nome do Aluno:</label>
+    <input type="text" id="nomeAluno" required autocomplete="off" />
+
+    <label for="disciplina">Disciplina:</label>
+    <input type="text" id="disciplina" required autocomplete="off"/>
+
+    <label for="nota">Nota (bimestre):</label>
+    <input type="number" id="nota" step="0.01" min="0" max="10" required autocomplete="off"/>
+
+    <button type="button" onclick="adicionarNota()">➕ Adicionar Nota</button>
+    <button type="button" onclick="reiniciarBoletim()">⟳ Reiniciar</button>
+    <button type="button" onclick="enviarParaOutraPagina()">✔️ Enviar para outra página</button>
+  </form>
+
+  <div class="resultado" id="resultado" style="display: none">
+    <h2>Resultado Final</h2>
+    <p><strong>Aluno:</strong> <span id="resAluno"></span></p>
+    <p><strong>Disciplina:</strong> <span id="resDisciplina"></span></p>
+    <p><strong>Notas:</strong></p>
+    <ul id="listaNotas"></ul>
+    <p><strong>Média Final:</strong> <span id="mediaFinal"></span></p>
+    <p><strong id="statusFinal"></strong></p>
+  </div>
+  <script src="script.js"></script>
+</body>
+</html>

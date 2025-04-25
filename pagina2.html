@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <title>Boletins Salvos</title>
+  <link rel="stylesheet" href="/BOLETIM/conteudos.css" />
+</head>
+<body>
+  <div class="container">
+    <h2>Boletins Salvos</h2>
+    <div class="buttons">
+      <button onclick="window.history.back()">🔙 Voltar</button>
+      <button onclick="limparHistorico()">🗑️ Limpar Histórico</button>
+      <button class="export-btn" id="exportarBtn" onclick="exportarPDF()">📄 Exportar para PDF</button>
+    </div>
+    <div id="listaBoletins"></div>
+  </div>
+
+  <!-- Biblioteca html2pdf -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+
+  <script>
+    const listaBoletins = document.getElementById('listaBoletins');
+    const exportarBtn = document.getElementById('exportarBtn');
+
+    let boletins = []; // variável global para controlar os boletins
+
+    // DISPLAY BOLETINS
+    function exibirBoletins() {
+      listaBoletins.innerHTML = '';
+      boletins = JSON.parse(localStorage.getItem('boletins')) || [];
+
+      if (boletins.length === 0) {
+        listaBoletins.innerHTML = '<p class="sem-boletins">Nenhum boletim encontrado.</p>';
+        exportarBtn.disabled = false; // deixa clicável, mas mostra alerta depois
+        return;
+      } else {
+        exportarBtn.disabled = false;
+      }
+
+      boletins.forEach((boletim, index) => {
+        const div = document.createElement('div');
+        div.className = 'boletim';
+        div.innerHTML = `
+          <strong>#${index + 1}</strong>
+          <strong>Aluno:</strong> ${boletim.aluno}
+          <strong>Disciplina:</strong> ${boletim.disciplina}
+          <strong>Notas:</strong>
+          <ul>
+            ${boletim.notas.map((n, i) => `<li>Nota ${i + 1}: ${n}</li>`).join('')}
+          </ul>
+          <strong>Média Final:</strong> ${boletim.media}
+          <strong>Status:</strong> ${boletim.status}
+          <strong>Registrado em:</strong> ${boletim.data}
+        `;
+        listaBoletins.appendChild(div);
+      });
+    }
+
+    // LIMPAR BOLETINS REGISTRADOS
+    function limparHistorico() {
+      if (confirm('Tem certeza que deseja apagar todos os boletins?')) {
+        localStorage.removeItem('boletins');
+        exibirBoletins();
+      }
+    }
+
+    // EXPORTAR PARA PDF
+    function exportarPDF() {
+      if (boletins.length === 0) {
+        alert('Nenhum boletim disponível para exportar.');
+        return; // Sai da função
+      }
+
+      const element = document.getElementById('listaBoletins');
+      const opt = {
+        margin:       0.5,
+        filename:     'boletins_escolares.pdf',
+        image:        { type: 'jpeg', quality: 0.98 },
+        html2canvas:  { scale: 2 },
+        jsPDF:        { unit: 'in', format: 'letter', orientation: 'portrait' }
+      };
+      html2pdf().set(opt).from(element).save();
+    }
+
+    exibirBoletins();
+  </script>
+</body>
+</html>
